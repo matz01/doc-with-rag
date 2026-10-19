@@ -4,7 +4,7 @@ A **permission-aware enterprise document assistant**. A fictional company keeps 
 split by department (HR, Sales, Finance, Engineering). Each user asks questions in natural language
 and gets answers with cited sources, built **only from the documents they are allowed to see**.
 
-> Status: early development — Phase 1 (foundations). Only the database runs so far.
+> Status: early development — Phase 1 (foundations). Database and a minimal API run; no AI logic yet.
 
 ## Key idea
 
@@ -28,7 +28,20 @@ retrieved, so they can never reach the LLM. No post-generation filtering.
 
 ```bash
 cp .env.example .env      # then set real values
-docker compose up -d      # Postgres 17 + pgvector on localhost:5432
+docker compose up -d --build   # API on localhost:8000, Postgres 17 + pgvector on localhost:5432
+```
+
+- API docs: http://localhost:8000/docs
+- Health check: http://localhost:8000/health
+
+Backend development without Docker:
+
+```bash
+cd backend
+uv sync
+uv run uvicorn app.main:app --reload   # dev server
+uv run pytest                          # tests
+uv run ruff check . && uv run ruff format --check .
 ```
 
 ## Repository layout

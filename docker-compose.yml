@@ -1,4 +1,12 @@
 services:
+  api:
+    build: ./backend
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
   db:
     # Official pgvector build on top of Postgres 17: the extension is preinstalled,
     # we only need to enable it (see infra/postgres/init.sql).
