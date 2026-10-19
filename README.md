@@ -4,7 +4,7 @@ A **permission-aware enterprise document assistant**. A fictional company keeps 
 split by department (HR, Sales, Finance, Engineering). Each user asks questions in natural language
 and gets answers with cited sources, built **only from the documents they are allowed to see**.
 
-> Status: early development — Phase 1 (foundations). Nothing runs yet.
+> Status: early development — Phase 1 (foundations). Only the database runs so far.
 
 ## Key idea
 
@@ -24,6 +24,13 @@ retrieved, so they can never reach the LLM. No post-generation filtering.
 | Observability | Langfuse (latency, tokens, cost per question) |
 | Runtime | Docker + docker-compose |
 
+## Quick start
+
+```bash
+cp .env.example .env      # then set real values
+docker compose up -d      # Postgres 17 + pgvector on localhost:5432
+```
+
 ## Repository layout
 
 ```
@@ -31,6 +38,7 @@ backend/   Python API: ingestion, retrieval, Q&A
 frontend/  React UI
 data/      Fictional company documents, users and permissions
 evals/     Evaluation suite and results
+infra/     Infrastructure config (Postgres init scripts)
 ```
 
 ## Roadmap

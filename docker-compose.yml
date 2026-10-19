@@ -1,0 +1,23 @@
+services:
+  db:
+    # Official pgvector build on top of Postgres 17: the extension is preinstalled,
+    # we only need to enable it (see infra/postgres/init.sql).
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-docrag}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-docrag}
+      POSTGRES_DB: ${POSTGRES_DB:-docrag}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Scripts here run only on first start, when the data volume is empty.
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
