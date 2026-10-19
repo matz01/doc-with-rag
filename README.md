@@ -67,6 +67,15 @@ infra/     Infrastructure config (Postgres init scripts)
 9. Structured extraction — contracts/invoices to validated JSON
 10. Polish — architecture diagram, demo, deployment
 
+## Technical decisions
+
+**LLM provider config — plain OpenAI-compatible settings, no LiteLLM (for now).**
+Mistral, Groq and Ollama all expose an OpenAI-compatible API, so a provider is just
+`base_url` + `model` + optional `api_key`, chosen with `LLM_PROVIDER` / `LLM_FALLBACK_PROVIDER`
+(see `backend/app/config.py`). Trade-off: one less dependency and full control over
+retry/fallback, but adding a non-compatible provider later would need an adapter.
+Invalid configuration (unknown provider, missing key) stops the API at startup.
+
 ## Data
 
 All documents are fictional and generated for this project. No real or personal data.

@@ -3,6 +3,13 @@ services:
     build: ./backend
     ports:
       - "${API_PORT:-8000}:8000"
+    # Provider settings (LLM_*, *_API_KEY, ...) come from .env; optional so `up` works without it.
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      # Inside the compose network the database host is the service name, not localhost.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-docrag}:${POSTGRES_PASSWORD:-docrag}@db:5432/${POSTGRES_DB:-docrag}
     depends_on:
       db:
         condition: service_healthy

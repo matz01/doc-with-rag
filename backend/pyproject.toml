@@ -5,6 +5,7 @@ description = "Permission-aware enterprise document assistant: API"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "fastapi",
+    "pydantic-settings>=2.16.0",
     "uvicorn[standard]",
 ]
 
