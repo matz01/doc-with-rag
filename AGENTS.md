@@ -51,11 +51,15 @@ Code should be readable and technical decisions documented with their trade-offs
   is passed to the LLM — never by filtering after generation.
 - **Free-tier limits:** handle HTTP 429 with retry and exponential backoff, then automatic switch to the fallback provider.
 - **Caching:** cache LLM responses during evaluation runs, so re-running the suite does not consume requests.
-- **Progress:** at the start of every session, read `docs/progress.md` to know what is done and what comes next.
+- **Progress:** `docs/progress.md` is the source of truth for project status. When asked what is done,
+  what is next or where we are, read it and answer from it; do not reconstruct the status from git history.
+  Use `git log` / `git status` only to check what changed after its "Last updated" date.
   At the end of a working session, run `/wrap-up` to update it.
 - Work one phase at a time. Before writing code for a phase, propose a plan and wait for confirmation.
 - Small, descriptive commits (Conventional Commits: `feat:`, `fix:`, `test:`, `refactor:`, `docs:`, `chore:`).
   No features beyond the current phase.
+- **Shell commands:** run them from the repository root, one command per call. Do not use `cd`,
+  `git -C` or chain commands with `&&` or `;`: permissions are matched on the whole command string. 
 
 ## Agents, skills and commands
 
