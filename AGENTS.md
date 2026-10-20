@@ -19,6 +19,7 @@ Code should be readable and technical decisions documented with their trade-offs
 | `frontend/` | React + TypeScript app. Tests next to the code as `*.test.ts` / `*.test.tsx` |
 | `data/` | Fictional corpus: `documents/`, `manifest.yaml` (permissions), `users.yaml` |
 | `evals/` | Evaluation questions and runner |
+| `docs/` | Progress log and technical notes |
 
 ## Stack
 
@@ -50,6 +51,8 @@ Code should be readable and technical decisions documented with their trade-offs
   is passed to the LLM — never by filtering after generation.
 - **Free-tier limits:** handle HTTP 429 with retry and exponential backoff, then automatic switch to the fallback provider.
 - **Caching:** cache LLM responses during evaluation runs, so re-running the suite does not consume requests.
+- **Progress:** at the start of every session, read `docs/progress.md` to know what is done and what comes next.
+  At the end of a working session, run `/wrap-up` to update it.
 - Work one phase at a time. Before writing code for a phase, propose a plan and wait for confirmation.
 - Small, descriptive commits (Conventional Commits: `feat:`, `fix:`, `test:`, `refactor:`, `docs:`, `chore:`).
   No features beyond the current phase.
@@ -65,21 +68,25 @@ Code should be readable and technical decisions documented with their trade-offs
 | Subagent | `@reviewer` | Read-only review of uncommitted changes |
 | Command | `/tdd <feature>` | Guided TDD cycle for one feature |
 | Command | `/review` | Review before committing |
+| Command | `/wrap-up` | Update `docs/progress.md` and the phase status at the end of a session |
 
 In the green phase, the Build agent must not edit test files; `opencode.json` asks for
 confirmation whenever it tries.
 
 ## Phased plan
 
-1. **Foundations:** repo structure, docker-compose with Postgres + pgvector, minimal FastAPI app, provider config, `.env.example`
-2. **Fictional data:** done — see `data/README.md` and `evals/README.md`
-3. **Ingestion:** parsing (MD, PDF, DOCX), chunking, local embeddings, storage in pgvector with metadata and permissions from `data/manifest.yaml`
-4. **Q&A:** question endpoint → permission-filtered search → LLM answer with citations (structured, validated output)
-5. **Frontend:** chat, clickable citations, user switcher
-6. **Evaluation:** runner for `evals/questions.yaml`; deterministic retrieval and answer checks, optional LLM-as-judge;
+Status: ✅ done · 🔄 in progress · ⏳ to do. Details, decisions and next steps are in `docs/progress.md`.
+
+1. ✅ **Foundations:** repo structure, docker-compose with Postgres + pgvector, minimal FastAPI app, provider config,
+   `.env.example`, `/health` and `/ready` endpoints
+2. ✅ **Fictional data:** see `data/README.md` and `evals/README.md`
+3. ⏳ **Ingestion:** parsing (MD, PDF, DOCX), chunking, local embeddings, storage in pgvector with metadata and permissions from `data/manifest.yaml`
+4. ⏳ **Q&A:** question endpoint → permission-filtered search → LLM answer with citations (structured, validated output)
+5. ⏳ **Frontend:** chat, clickable citations, user switcher
+6. ⏳ **Evaluation:** runner for `evals/questions.yaml`; deterministic retrieval and answer checks, optional LLM-as-judge;
    provider comparison; results table in the README
-7. **Observability and reliability:** tracing, costs, retry/fallback
-8. **MCP server** exposing document search (permission-aware)
-9. **Extra structured outputs:** field extraction from contracts/invoices into validated JSON
-10. **Polish:** README with architecture diagram, demo GIF, technical decisions and known limitations; deploy the demo
+7. ⏳ **Observability and reliability:** tracing, costs, retry/fallback
+8. ⏳ **MCP server** exposing document search (permission-aware)
+9. ⏳ **Extra structured outputs:** field extraction from contracts/invoices into validated JSON
+10. ⏳ **Polish:** README with architecture diagram, demo GIF, technical decisions and known limitations; deploy the demo
     with cached example questions and a per-visitor request limit
