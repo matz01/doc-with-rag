@@ -4,7 +4,8 @@ A **permission-aware enterprise document assistant**. A fictional company keeps 
 split by department (HR, Sales, Finance, Engineering). Each user asks questions in natural language
 and gets answers with cited sources, built **only from the documents they are allowed to see**.
 
-> Status: early development — Phase 1 (foundations). Database and a minimal API run; no AI logic yet.
+> Status: phases 1 (foundations) and 2 (fictional dataset) are done. Database, minimal API and
+> evaluation questions are in place; next is Phase 3 (ingestion: parsing, chunking, embeddings).
 
 ## Key idea
 
@@ -79,6 +80,11 @@ Invalid configuration (unknown provider, missing key) stops the API at startup.
 ## Data
 
 All documents are fictional and generated for this project. No real or personal data.
+The corpus: **42 documents** for the fictional company *Quillmoor Software*
+(Markdown, PDF, DOCX) with per-document permissions in `data/manifest.yaml`,
+**8 users** in `data/users.yaml`, and **60 evaluation questions** in
+`evals/questions.yaml` (single-doc, multi-doc, conflicting versions,
+permission-denied, permission-partial, unanswerable).
 
 ## License
 
