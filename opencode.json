@@ -1,20 +1,46 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "permission": {
-    "skill": {
-      "*": "allow"
-    }
-  },
-  "agent": {
+  "permissions": [
+    {"action": "skill", "resource": "*", "effect": "allow"},
+    {"action": "read", "resource": "*.env", "effect": "deny"},
+    {"action": "read", "resource": "*.env.*", "effect": "deny"},
+    {"action": "read", "resource": "*.env.example", "effect": "allow"},
+    {"action": "shell", "resource": "*", "effect": "ask"},
+    {"action": "shell", "resource": "ls *", "effect": "allow"},
+    {"action": "shell", "resource": "cat *", "effect": "allow"},
+    {"action": "shell", "resource": "head *", "effect": "allow"},
+    {"action": "shell", "resource": "tail *", "effect": "allow"},
+    {"action": "shell", "resource": "find *", "effect": "allow"},
+    {"action": "shell", "resource": "grep *", "effect": "allow"},
+    {"action": "shell", "resource": "rg *", "effect": "allow"},
+    {"action": "shell", "resource": "wc *", "effect": "allow"},
+    {"action": "shell", "resource": "pwd", "effect": "allow"},
+    {"action": "shell", "resource": "git status *", "effect": "allow"},
+    {"action": "shell", "resource": "git diff *", "effect": "allow"},
+    {"action": "shell", "resource": "git log *", "effect": "allow"},
+    {"action": "shell", "resource": "git show *", "effect": "allow"},
+    {"action": "shell", "resource": "git add *", "effect": "allow"},
+    {"action": "shell", "resource": "uv run *", "effect": "allow"},
+    {"action": "shell", "resource": "uv sync *", "effect": "allow"},
+    {"action": "shell", "resource": "uv lock *", "effect": "allow"},
+    {"action": "shell", "resource": "docker compose ps *", "effect": "allow"},
+    {"action": "shell", "resource": "docker compose logs *", "effect": "allow"},
+    {"action": "shell", "resource": "docker compose up *", "effect": "allow"},
+    {"action": "shell", "resource": "docker compose build *", "effect": "allow"},
+    {"action": "shell", "resource": "npm test *", "effect": "allow"},
+    {"action": "shell", "resource": "npm run *", "effect": "allow"},
+    {"action": "shell", "resource": "npx vitest *", "effect": "allow"},
+    {"action": "shell", "resource": "mkdir *", "effect": "allow"},
+    {"action": "shell", "resource": "*.env", "effect": "deny"},
+    {"action": "shell", "resource": "*.env *", "effect": "deny"}
+  ],
+  "agents": {
     "build": {
-      "permission": {
-        "edit": {
-          "*": "allow",
-          "backend/tests/**": "ask",
-          "frontend/**/*.test.ts": "ask",
-          "frontend/**/*.test.tsx": "ask"
-        }
-      }
+      "permissions": [
+        {"action": "edit", "resource": "backend/tests/*", "effect": "ask"},
+        {"action": "edit", "resource": "frontend/*.test.ts", "effect": "ask"},
+        {"action": "edit", "resource": "frontend/*.test.tsx", "effect": "ask"}
+      ]
     }
   }
 }

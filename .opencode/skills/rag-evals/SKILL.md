@@ -1,6 +1,7 @@
 ---
 name: rag-evals
 description: How to run the evaluation suite in evals/, how scoring works and how to interpret and report results (retrieval recall, permission leaks, key facts, forbidden content, provider comparison). Load when running, changing or reporting on evaluations.
+slash: false
 ---
 
 # RAG evaluations

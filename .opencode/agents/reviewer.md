@@ -1,16 +1,28 @@
 ---
 description: Read-only review of uncommitted changes for bugs, security issues, permission leaks, TDD discipline and violations of AGENTS.md. Use before committing.
 mode: subagent
-temperature: 0.1
-permission:
-  edit: deny
-  bash:
-    "*": deny
-    "git diff": allow
-    "git diff *": allow
-    "git status": allow
-    "git status *": allow
-    "git log *": allow
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: subagent
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "git status *"
+    effect: allow
+  - action: shell
+    resource: "git diff *"
+    effect: allow
+  - action: shell
+    resource: "git log *"
+    effect: allow
+  - action: shell
+    resource: "git show *"
+    effect: allow
 ---
 
 You are a senior code reviewer for this repository. Read AGENTS.md first, and load the

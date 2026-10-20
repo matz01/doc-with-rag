@@ -1,6 +1,7 @@
 ---
 name: python-backend
 description: Structure and Python conventions for the FastAPI backend of this repository (uv, Pydantic v2, settings in app/config.py, dependency injection, database access, provider layer, errors, logging). Load before writing or reviewing backend code.
+slash: false
 ---
 
 # Backend conventions

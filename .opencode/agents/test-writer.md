@@ -1,18 +1,22 @@
 ---
 description: Red phase of TDD. Writes one failing test for one behaviour and runs it to confirm it fails for the expected reason. Can edit test files only, never production code.
 mode: subagent
-temperature: 0.2
-permission:
-  edit:
-    "*": deny
-    "backend/tests/**": allow
-    "frontend/**/*.test.ts": allow
-    "frontend/**/*.test.tsx": allow
-  bash:
-    "*": ask
-    "uv run --directory backend pytest": allow
-    "uv run --directory backend pytest *": allow
-    "npm test --prefix frontend*": allow
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: edit
+    resource: "backend/tests/*"
+    effect: allow
+  - action: edit
+    resource: "frontend/*.test.ts"
+    effect: allow
+  - action: edit
+    resource: "frontend/*.test.tsx"
+    effect: allow
+  - action: subagent
+    resource: "*"
+    effect: deny
 ---
 
 You write tests for the red phase of TDD. Load the `tdd` skill first.

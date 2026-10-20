@@ -1,6 +1,7 @@
 ---
 name: tdd
 description: Test-driven development rules for this repository (red → green → refactor), test conventions for pytest and Vitest, and how to handle LLMs, embeddings and the database in tests. Load before writing or changing any production code, including bug fixes.
+slash: false
 ---
 
 # Test-driven development
