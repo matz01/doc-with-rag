@@ -1,0 +1,62 @@
+# Fictional users and groups for Quillmoor Software.
+# Access model: a user can read a document only if they belong to at least one
+# of the document's `allowed_groups` (see manifest.yaml). There is no implicit
+# inheritance: executives and managers only see what is explicitly granted.
+
+groups:
+  all_staff: Every employee
+  hr: People & Culture team
+  sales: Sales team
+  finance: Finance team
+  engineering: Engineering team
+  managers: People managers across departments
+  executives: Leadership team
+
+users:
+  - id: alice.moretti
+    name: Alice Moretti
+    title: HR Business Partner
+    department: hr
+    groups: [all_staff, hr]
+
+  - id: ben.okafor
+    name: Ben Okafor
+    title: Account Executive
+    department: sales
+    groups: [all_staff, sales]
+
+  - id: carla.jensen
+    name: Carla Jensen
+    title: Finance Controller
+    department: finance
+    groups: [all_staff, finance]
+
+  - id: david.lindqvist
+    name: David Lindqvist
+    title: Backend Engineer
+    department: engineering
+    groups: [all_staff, engineering]
+
+  - id: elena.rossi
+    name: Elena Rossi
+    title: Engineering Manager
+    department: engineering
+    groups: [all_staff, engineering, managers]
+
+  - id: grace.tanaka
+    name: Grace Tanaka
+    title: Sales Director
+    department: sales
+    groups: [all_staff, sales, managers]
+
+  - id: frank.adeyemi
+    name: Frank Adeyemi
+    title: Chief Executive Officer
+    department: executive
+    groups: [all_staff, managers, executives]
+
+  - id: henry.walsh
+    name: Henry Walsh
+    title: Marketing Associate
+    department: marketing
+    groups: [all_staff]

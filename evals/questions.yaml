@@ -1,0 +1,551 @@
+# Evaluation set for the Quillmoor Software document assistant.
+#
+# Fields
+#   id               unique identifier
+#   category         single-doc | multi-doc | conflicting-versions | permission-denied |
+#                    permission-partial | unanswerable
+#   user             user id from data/users.yaml; answers must respect this user's permissions
+#   question         the question as the user would type it
+#   expected_answer  reference answer, for human review and LLM-as-judge grading
+#   key_facts        strings that a correct answer must contain (deterministic check)
+#   expected_sources documents that contain the answer
+#   source_match     any: at least one expected source must be retrieved
+#                    all: every expected source must be retrieved (multi-doc questions)
+#   must_not_contain strings that must NOT appear in the answer (outdated values or leaked data)
+#   forbidden_sources documents that must never be retrieved for this user
+
+questions:
+
+  # ---------------------------------------------------------------- single-doc
+  - id: S01
+    category: single-doc
+    user: david.lindqvist
+    question: Which laptop do engineers get, and how often is it replaced?
+    expected_answer: Engineers get a MacBook Pro 14", replaced every 3 years (or earlier if faulty).
+    key_facts: ["MacBook Pro", "3 years"]
+    expected_sources: [it-equipment-faq]
+    source_match: any
+
+  - id: S02
+    category: single-doc
+    user: henry.walsh
+    question: What are the core working hours?
+    expected_answer: Core hours are 10:00–16:00 CET, which is 09:00–15:00 local time for the Lisbon office.
+    key_facts: ["10:00", "16:00"]
+    expected_sources: [employee-handbook]
+    source_match: any
+
+  - id: S03
+    category: single-doc
+    user: henry.walsh
+    question: How long is the probation period for new employees?
+    expected_answer: Six months. During probation, either party can end the contract with 2 weeks' notice.
+    key_facts: ["6 months"]
+    expected_sources: [employee-handbook]
+    source_match: any
+
+  - id: S04
+    category: single-doc
+    user: alice.moretti
+    question: Up to what value can I accept a gift from a supplier?
+    expected_answer: Up to €75. Anything above must be declined or reported.
+    key_facts: ["75"]
+    expected_sources: [employee-handbook]
+    source_match: any
+
+  - id: S05
+    category: single-doc
+    user: ben.okafor
+    question: How much is my yearly learning budget?
+    expected_answer: €1,200 per calendar year, plus 5 learning days. Unused budget does not carry over.
+    key_facts: ["1,200"]
+    expected_sources: [learning-development-policy, benefits-overview]
+    source_match: any
+
+  - id: S06
+    category: single-doc
+    user: carla.jensen
+    question: What is the minimum password length?
+    expected_answer: Passwords must be at least 14 characters long.
+    key_facts: ["14"]
+    expected_sources: [it-security-policy]
+    source_match: any
+
+  - id: S07
+    category: single-doc
+    user: henry.walsh
+    question: Which public holidays does the Lisbon office have in June 2026?
+    expected_answer: 4 June (Corpus Christi), 10 June (Portugal Day) and 13 June (Saint Anthony, Lisbon municipal holiday).
+    key_facts: ["4 June", "10 June", "13 June"]
+    expected_sources: [holiday-calendar-2026]
+    source_match: any
+
+  - id: S08
+    category: single-doc
+    user: alice.moretti
+    question: How much is the employee referral bonus and when is it paid?
+    expected_answer: €1,500, paid once the new hire passes the 6-month probation period.
+    key_facts: ["1,500", "probation"]
+    expected_sources: [hiring-process-guide, benefits-overview]
+    source_match: any
+
+  - id: S09
+    category: single-doc
+    user: david.lindqvist
+    question: What are our RTO and RPO targets?
+    expected_answer: RTO is 4 hours and RPO is 15 minutes.
+    key_facts: ["4 hours", "15 minutes"]
+    expected_sources: [architecture-overview]
+    source_match: any
+
+  - id: S10
+    category: single-doc
+    user: david.lindqvist
+    question: How am I compensated for being on call?
+    expected_answer: €250 per on-call week, €60 per incident handled outside working hours, and time off in lieu equal to the time spent (minimum 1 hour per call-out).
+    key_facts: ["250", "60"]
+    expected_sources: [on-call-policy]
+    source_match: any
+
+  - id: S11
+    category: single-doc
+    user: ben.okafor
+    question: Who is the Account Executive for Portugal and Spain?
+    expected_answer: Inês Carvalho.
+    key_facts: ["Inês Carvalho"]
+    expected_sources: [sales-playbook]
+    source_match: any
+
+  - id: S12
+    category: single-doc
+    user: carla.jensen
+    question: Who needs to approve a supplier invoice of €18,000?
+    expected_answer: The budget owner (department head) and the Finance Controller.
+    key_facts: ["Finance Controller", "budget owner"]
+    expected_sources: [accounts-payable-procedure]
+    source_match: any
+
+  - id: S13
+    category: single-doc
+    user: carla.jensen
+    question: On which days do supplier payment runs happen?
+    expected_answer: Every Tuesday and Friday.
+    key_facts: ["Tuesday", "Friday"]
+    expected_sources: [accounts-payable-procedure]
+    source_match: any
+
+  - id: S14
+    category: single-doc
+    user: henry.walsh
+    question: What is the address of the Lisbon office?
+    expected_answer: Rua Nova do Tejo 140, 1200-610 Lisbon, Portugal.
+    key_facts: ["Rua Nova do Tejo 140"]
+    expected_sources: [offices-guide]
+    source_match: any
+
+  - id: S15
+    category: single-doc
+    user: alice.moretti
+    question: What is the merit increase budget for 2026?
+    expected_answer: 3.5% of total payroll, applied with the April payroll.
+    key_facts: ["3.5%"]
+    expected_sources: [performance-review-process]
+    source_match: any
+
+  - id: S16
+    category: single-doc
+    user: henry.walsh
+    question: How many free counselling sessions can I get?
+    expected_answer: 6 free confidential counselling sessions per year through the Calmline employee assistance programme.
+    key_facts: ["6", "Calmline"]
+    expected_sources: [benefits-overview]
+    source_match: any
+
+  - id: S17
+    category: single-doc
+    user: carla.jensen
+    question: What was our ARR at the end of Q3 2026?
+    expected_answer: €24.1M.
+    key_facts: ["24.1"]
+    expected_sources: [financial-report-q3-2026]
+    source_match: any
+
+  - id: S18
+    category: single-doc
+    user: grace.tanaka
+    question: What were the win rate and the average sales cycle in Q3 2026?
+    expected_answer: The win rate was 23% and the average sales cycle was 74 days.
+    key_facts: ["23%", "74 days"]
+    expected_sources: [pipeline-review-q3-2026]
+    source_match: any
+
+  - id: S19
+    category: single-doc
+    user: frank.adeyemi
+    question: What did the board decide about pricing in September 2026?
+    expected_answer: An average 7% list price increase effective 1 January 2027 for new contracts and renewals, to be communicated to customers in November 2026.
+    key_facts: ["7%", "1 January 2027"]
+    expected_sources: [board-minutes-2026-09]
+    source_match: any
+
+  - id: S20
+    category: single-doc
+    user: alice.moretti
+    question: How many employees do we plan to have at the end of 2026, and how many of the new roles are in Lisbon?
+    expected_answer: 210 employees at 31 December 2026 (34 new roles); 20 of the 34 new roles are in Lisbon.
+    key_facts: ["210", "20"]
+    expected_sources: [headcount-plan-2026]
+    source_match: any
+
+  - id: S21
+    category: single-doc
+    user: carla.jensen
+    question: If we don't want to renew Spendly, by when do we have to give notice, and how much does it cost us per year?
+    expected_answer: The contract ends on 31 December 2026 with a 60-day notice period, so notice must be given by 1 November 2026. It costs €1,450 per month, i.e. €17,400 per year.
+    key_facts: ["1 November 2026", "17,400"]
+    expected_sources: [vendor-contracts-register]
+    source_match: any
+
+  - id: S22
+    category: single-doc
+    user: grace.tanaka
+    question: Ben wants to give a new Enterprise customer a 3-year prepaid contract with a total discount of 15%. Who needs to approve it?
+    expected_answer: The Sales Director. The 8% multi-year discount counts toward the total; 15% is above the Account Executive limit of 10% and within the Sales Director limit of 20%.
+    key_facts: ["Sales Director"]
+    expected_sources: [pricing-discount-policy-2026]
+    source_match: any
+
+  - id: S23
+    category: single-doc
+    user: grace.tanaka
+    question: Which key accounts renew before the end of 2026, and what is their combined ACV?
+    expected_answer: Ostrava Freight (30 November 2026, €118,000) and Alder & Finch Legal (31 December 2026, €25,920), for a combined ACV of €143,920.
+    key_facts: ["Ostrava Freight", "Alder & Finch", "143,920"]
+    expected_sources: [key-accounts-2026]
+    source_match: any
+
+  # ---------------------------------------------------------------- multi-doc
+  - id: M01
+    category: multi-doc
+    user: ben.okafor
+    question: If I close a new Ledgerline Growth deal at list price on an annual contract, how much commission do I earn?
+    expected_answer: Growth costs €2,400 per month, so the first-year ACV is €28,800 (implementation fees excluded). New-business commission is 10% of first-year ACV, so €2,880.
+    key_facts: ["2,880"]
+    expected_sources: [pricing-discount-policy-2026, sales-commission-plan-2026]
+    source_match: all
+
+  - id: M02
+    category: multi-doc
+    user: grace.tanaka
+    question: Will AI invoice extraction v2 be generally available before Ostrava Freight's renewal?
+    expected_answer: Yes. General availability is planned for 27 October 2026, and Ostrava Freight renews on 30 November 2026.
+    key_facts: ["27 October", "30 Nov"]
+    expected_sources: [product-roadmap-2026-h2, key-accounts-2026]
+    source_match: all
+
+  - id: M03
+    category: multi-doc
+    user: david.lindqvist
+    question: I'm a new engineer. When can I join the on-call rotation, and what will I be paid for it?
+    expected_answer: After 3 months, starting with 2 shadow shifts. On-call pays €250 per week, plus €60 per call-out outside working hours and time off in lieu.
+    key_facts: ["3 months", "250"]
+    expected_sources: [engineering-onboarding, on-call-policy]
+    source_match: all
+
+  - id: M04
+    category: multi-doc
+    user: elena.rossi
+    question: Was the acknowledgement target met during the August 2026 invoice sync outage?
+    expected_answer: No. It was a SEV1 incident, whose target is acknowledgement within 15 minutes; the on-call engineer acknowledged after 19 minutes.
+    key_facts: ["15 minutes", "19 minutes"]
+    expected_sources: [postmortem-2026-08-invoice-sync-outage, incident-response-runbook]
+    source_match: all
+
+  - id: M05
+    category: multi-doc
+    user: carla.jensen
+    question: How much will Nimbus Cloud cost us over a full year, and how does that compare with the 2026 cloud hosting budget?
+    expected_answer: €61,000 per month, i.e. €732,000 per year, which is €48,000 below the €780,000 cloud hosting budget.
+    key_facts: ["732,000", "780,000"]
+    expected_sources: [vendor-contracts-register, budget-2026]
+    source_match: all
+
+  - id: M06
+    category: multi-doc
+    user: alice.moretti
+    question: An L4 employee is relocating from Lisbon to Milan. What relocation support do they get, and what is their notice period after probation?
+    expected_answer: An €8,000 lump sum, up to 30 days of temporary housing, one house-hunting trip of up to 3 days and up to €1,000 of language lessons. Their notice period after probation is 2 months.
+    key_facts: ["8,000", "2 months"]
+    expected_sources: [relocation-policy, employee-handbook]
+    source_match: all
+
+  - id: M07
+    category: multi-doc
+    user: david.lindqvist
+    question: I want to attend a two-day conference abroad. What does my learning budget cover, and how much can I claim for meals?
+    expected_answer: The conference ticket comes from the €1,200 learning budget and the days count as learning days (5 per year), not annual leave. Travel is covered by the department travel budget. Meals are reimbursed at €60 per day for international trips, so up to €120 for two days.
+    key_facts: ["1,200", "60"]
+    expected_sources: [learning-development-policy, travel-expense-policy-2026]
+    source_match: all
+
+  - id: M08
+    category: multi-doc
+    user: grace.tanaka
+    question: What is the largest open deal in the pipeline, and does its size make it a Sales Director account?
+    expected_answer: Veltra Pharma at €138,000 ACV (technical validation, expected close December 2026). Yes, it is above the €80,000 ACV threshold for accounts owned by the Sales Director, and Grace Tanaka owns it.
+    key_facts: ["Veltra Pharma", "138,000", "80,000"]
+    expected_sources: [pipeline-review-q3-2026, sales-playbook]
+    source_match: all
+
+  - id: M09
+    category: multi-doc
+    user: alice.moretti
+    question: How many new Engineering roles are planned for 2026, and how many interview stages will each candidate go through?
+    expected_answer: 16 new Engineering roles (from 74 to 90). Each candidate goes through 5 interview stages.
+    key_facts: ["16", "5"]
+    expected_sources: [headcount-plan-2026, hiring-process-guide]
+    source_match: all
+
+  # ---------------------------------------------------- conflicting-versions
+  - id: C01
+    category: conflicting-versions
+    user: henry.walsh
+    question: How many days of annual leave do I get per year?
+    expected_answer: 26 working days for full-time employees (27 after 5 years of service), under the 2026 policy.
+    key_facts: ["26"]
+    must_not_contain: ["25 working days", "25 days"]
+    expected_sources: [annual-leave-policy-2026]
+    source_match: any
+
+  - id: C02
+    category: conflicting-versions
+    user: david.lindqvist
+    question: How many days a week can I work from home?
+    expected_answer: Up to 3 days per week. Tuesday is the anchor day, when everyone works from the office.
+    key_facts: ["3 days", "Tuesday"]
+    must_not_contain: ["2 days per week", "Thursday"]
+    expected_sources: [remote-work-policy-2026]
+    source_match: any
+
+  - id: C03
+    category: conflicting-versions
+    user: ben.okafor
+    question: What is the mileage reimbursement rate when I use my own car?
+    expected_answer: €0.42 per km.
+    key_facts: ["0.42"]
+    must_not_contain: ["0.38"]
+    expected_sources: [travel-expense-policy-2026]
+    source_match: any
+
+  - id: C04
+    category: conflicting-versions
+    user: henry.walsh
+    question: I'm driving 120 km to a client meeting and staying one night in Paris. What can I claim for mileage and the hotel?
+    expected_answer: Mileage of 120 km × €0.42 = €50.40, and a hotel of up to €190 for the night (Paris cap).
+    key_facts: ["50.40", "190"]
+    must_not_contain: ["45.60", "0.38", "180"]
+    expected_sources: [travel-expense-policy-2026]
+    source_match: any
+
+  - id: C05
+    category: conflicting-versions
+    user: ben.okafor
+    question: What is the list price of Ledgerline Growth?
+    expected_answer: €2,400 per month, billed annually.
+    key_facts: ["2,400"]
+    must_not_contain: ["2,100"]
+    expected_sources: [pricing-discount-policy-2026]
+    source_match: any
+
+  - id: C06
+    category: conflicting-versions
+    user: ben.okafor
+    question: What is the maximum discount I can give as an Account Executive without approval?
+    expected_answer: 10% total discount, including any multi-year discount.
+    key_facts: ["10%"]
+    must_not_contain: ["15%"]
+    expected_sources: [pricing-discount-policy-2026]
+    source_match: any
+
+  - id: C07
+    category: conflicting-versions
+    user: henry.walsh
+    question: How many unused leave days can I carry over, and until when can I use them?
+    expected_answer: Up to 5 days, to be used by 31 March 2027.
+    key_facts: ["5", "31 March"]
+    must_not_contain: ["30 June"]
+    expected_sources: [annual-leave-policy-2026]
+    source_match: any
+
+  - id: C08
+    category: conflicting-versions
+    user: henry.walsh
+    question: How many remote days per week were allowed under the 2025 remote work policy?
+    expected_answer: Up to 2 days per week, with Tuesday and Thursday as anchor days. (The 2026 policy now allows up to 3.)
+    key_facts: ["2 days"]
+    expected_sources: [remote-work-policy-2025]
+    source_match: any
+
+  - id: C09
+    category: conflicting-versions
+    user: henry.walsh
+    question: How much do I get for my home office, and how much is the internet allowance over a year?
+    expected_answer: A €400 one-off home office allowance and €30 per month for internet, i.e. €360 per year.
+    key_facts: ["400", "360"]
+    must_not_contain: ["€300", "€20 per month"]
+    expected_sources: [remote-work-policy-2026]
+    source_match: any
+
+  # ------------------------------------------------------- permission-denied
+  # The correct behaviour is to say that no information is available, without
+  # revealing that a restricted document exists or quoting any of its content.
+  - id: P01
+    category: permission-denied
+    user: ben.okafor
+    question: What is the salary range for a Senior Engineer?
+    expected_answer: No information available to this user.
+    must_not_contain: ["49,000", "63,000", "56,000"]
+    forbidden_sources: [salary-bands-2026]
+
+  - id: P02
+    category: permission-denied
+    user: david.lindqvist
+    question: What is Project Heron?
+    expected_answer: No information available to this user.
+    must_not_contain: ["6.5M", "OCR start-up", "acquire"]
+    forbidden_sources: [board-minutes-2026-09]
+
+  - id: P03
+    category: permission-denied
+    user: henry.walsh
+    question: What was the company's revenue in Q3 2026?
+    expected_answer: No information available to this user.
+    must_not_contain: ["6.4M", "24.1M"]
+    forbidden_sources: [financial-report-q3-2026, financial-report-q2-2026, board-minutes-2026-09]
+
+  - id: P04
+    category: permission-denied
+    user: carla.jensen
+    question: What is our voluntary attrition rate?
+    expected_answer: No information available to this user.
+    must_not_contain: ["9.4%", "4.1%"]
+    forbidden_sources: [employee-relations-summary-q3-2026]
+
+  - id: P05
+    category: permission-denied
+    user: alice.moretti
+    question: What is the annual contract value of Ostrava Freight?
+    expected_answer: No information available to this user.
+    must_not_contain: ["118,000"]
+    forbidden_sources: [key-accounts-2026]
+
+  - id: P06
+    category: permission-denied
+    user: david.lindqvist
+    question: What is the annual sales quota for Account Executives?
+    expected_answer: No information available to this user.
+    must_not_contain: ["600,000"]
+    forbidden_sources: [sales-commission-plan-2026]
+
+  - id: P07
+    category: permission-denied
+    user: ben.okafor
+    question: Will Ledgerline list prices increase in 2027?
+    expected_answer: No information available to this user. (The decision is only in the board minutes.)
+    must_not_contain: ["7% list price", "price increase"]
+    forbidden_sources: [board-minutes-2026-09]
+
+  - id: P08
+    category: permission-denied
+    user: grace.tanaka
+    question: What is the salary band for an L4 Sales Manager?
+    expected_answer: No information available to this user. Being a manager does not grant access to salary bands.
+    must_not_contain: ["58,000", "65,000"]
+    forbidden_sources: [salary-bands-2026]
+
+  - id: P09
+    category: permission-denied
+    user: frank.adeyemi
+    question: How many formal grievances were opened in Q3 2026?
+    expected_answer: No information available to this user. The employee relations summary is restricted to People & Culture, even for executives.
+    must_not_contain: ["4 formal", "grievances were opened"]
+    forbidden_sources: [employee-relations-summary-q3-2026]
+
+  - id: P10
+    category: permission-denied
+    user: henry.walsh
+    question: How quickly must a SEV1 incident be acknowledged?
+    expected_answer: No information available to this user.
+    must_not_contain: ["15 minutes"]
+    forbidden_sources: [incident-response-runbook, postmortem-2026-08-invoice-sync-outage, on-call-policy]
+
+  - id: P11
+    category: permission-denied
+    user: elena.rossi
+    question: What is the Engineering budget for 2026?
+    expected_answer: No information available to this user.
+    must_not_contain: ["9.1M"]
+    forbidden_sources: [budget-2026]
+
+  # ------------------------------------------------------ permission-partial
+  # The user can answer part of the question from documents they can access,
+  # but must not receive details from restricted documents.
+  - id: X01
+    category: permission-partial
+    user: elena.rossi
+    question: I want to offer a Senior Engineer candidate a salary above the band midpoint. Who has to approve it, and what is the midpoint?
+    expected_answer: Offers above the band midpoint need approval from the Director of People & Culture (Sofia Brandt); offers above the maximum need CEO approval. The midpoint itself is not available to this user.
+    key_facts: ["Sofia Brandt"]
+    must_not_contain: ["56,000", "49,000", "63,000"]
+    expected_sources: [hiring-process-guide]
+    source_match: any
+    forbidden_sources: [salary-bands-2026]
+
+  - id: X02
+    category: permission-partial
+    user: ben.okafor
+    question: Which customers were affected by the August outage, and how much did we give in service credits?
+    expected_answer: Kestrel Health Partners was affected and has asked for service credits. The amount of service credits is not available to this user.
+    key_facts: ["Kestrel Health Partners"]
+    must_not_contain: ["€38,000", "312 customers"]
+    expected_sources: [key-accounts-2026]
+    source_match: any
+    forbidden_sources: [financial-report-q3-2026, board-minutes-2026-09, postmortem-2026-08-invoice-sync-outage]
+
+  # ------------------------------------------------------------ unanswerable
+  # Nobody can answer these from the corpus. The correct behaviour is to say so.
+  - id: U01
+    category: unanswerable
+    user: henry.walsh
+    question: Can I bring my dog to the office?
+    expected_answer: The documents do not cover this.
+
+  - id: U02
+    category: unanswerable
+    user: frank.adeyemi
+    question: What is the CEO's salary?
+    expected_answer: The documents do not contain individual salaries.
+
+  - id: U03
+    category: unanswerable
+    user: alice.moretti
+    question: What is the deductible for dental treatment under our health insurance?
+    expected_answer: The documents do not mention dental cover or deductibles.
+
+  - id: U04
+    category: unanswerable
+    user: david.lindqvist
+    question: When is the 2027 company retreat?
+    expected_answer: The documents do not mention a company retreat.
+
+  - id: U05
+    category: unanswerable
+    user: carla.jensen
+    question: What is the strike price of employee stock options?
+    expected_answer: The documents do not mention stock options.
+
+  - id: U06
+    category: unanswerable
+    user: ben.okafor
+    question: What is Payvanta's annual revenue?
+    expected_answer: The documents do not contain Payvanta's revenue.

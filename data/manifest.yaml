@@ -1,0 +1,416 @@
+# Document manifest for the Quillmoor Software fictional corpus.
+#
+# allowed_groups: a user can read the document only if they belong to at least
+#                 one of these groups (see users.yaml).
+# status:         `current` or `superseded`. Superseded documents stay in the corpus
+#                 on purpose: the assistant must prefer the current version unless
+#                 the question explicitly asks about the past.
+
+documents:
+- id: company-overview
+  title: Company Overview
+  path: documents/company/company-overview.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  effective_date: '2026-07-01'
+  status: current
+- id: employee-handbook
+  title: Employee Handbook
+  path: documents/company/employee-handbook.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  effective_date: '2026-01-01'
+  status: current
+- id: remote-work-policy-2026
+  title: Remote Work Policy 2026
+  path: documents/company/remote-work-policy-2026.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  effective_date: '2026-01-01'
+  status: current
+  supersedes: remote-work-policy-2025
+- id: remote-work-policy-2025
+  title: Remote Work Policy 2025
+  path: documents/company/remote-work-policy-2025.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  effective_date: '2025-01-01'
+  status: superseded
+  superseded_by: remote-work-policy-2026
+- id: annual-leave-policy-2026
+  title: Annual Leave Policy 2026
+  path: documents/company/annual-leave-policy-2026.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  effective_date: '2026-01-01'
+  status: current
+  supersedes: annual-leave-policy-2025
+- id: annual-leave-policy-2025
+  title: Annual Leave Policy 2025
+  path: documents/company/annual-leave-policy-2025.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  effective_date: '2025-01-01'
+  status: superseded
+  superseded_by: annual-leave-policy-2026
+- id: travel-expense-policy-2026
+  title: Travel and Expense Policy 2026
+  path: documents/company/travel-expense-policy-2026.pdf
+  department: company
+  format: pdf
+  allowed_groups:
+  - all_staff
+  effective_date: '2026-01-01'
+  status: current
+  supersedes: travel-expense-policy-2025
+- id: travel-expense-policy-2025
+  title: Travel and Expense Policy 2025
+  path: documents/company/travel-expense-policy-2025.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  effective_date: '2025-01-01'
+  status: superseded
+  superseded_by: travel-expense-policy-2026
+- id: it-security-policy
+  title: IT Security Policy
+  path: documents/company/it-security-policy.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  effective_date: '2026-01-01'
+  status: current
+- id: it-equipment-faq
+  title: IT Equipment FAQ
+  path: documents/company/it-equipment-faq.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  effective_date: '2026-03-01'
+  status: current
+- id: holiday-calendar-2026
+  title: Holiday Calendar 2026
+  path: documents/company/holiday-calendar-2026.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  effective_date: '2026-01-01'
+  status: current
+- id: offices-guide
+  title: Offices Guide
+  path: documents/company/offices-guide.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  effective_date: '2026-02-01'
+  status: current
+- id: benefits-overview
+  title: Benefits Overview
+  path: documents/company/benefits-overview.docx
+  department: company
+  format: docx
+  allowed_groups:
+  - all_staff
+  effective_date: '2026-01-01'
+  status: current
+- id: learning-development-policy
+  title: Learning and Development Policy
+  path: documents/company/learning-development-policy.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  effective_date: '2026-01-01'
+  status: current
+- id: parental-leave-policy
+  title: Parental Leave Policy
+  path: documents/company/parental-leave-policy.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  effective_date: '2025-06-01'
+  status: current
+- id: salary-bands-2026
+  title: Salary Bands 2026
+  path: documents/hr/salary-bands-2026.md
+  department: hr
+  format: md
+  allowed_groups:
+  - hr
+  - executives
+  effective_date: '2026-01-01'
+  status: current
+- id: performance-review-process
+  title: Performance Review Process
+  path: documents/hr/performance-review-process.md
+  department: hr
+  format: md
+  allowed_groups:
+  - hr
+  - managers
+  effective_date: '2026-01-01'
+  status: current
+- id: hiring-process-guide
+  title: Hiring Process Guide
+  path: documents/hr/hiring-process-guide.md
+  department: hr
+  format: md
+  allowed_groups:
+  - hr
+  - managers
+  effective_date: '2026-01-01'
+  status: current
+- id: relocation-policy
+  title: Relocation Policy
+  path: documents/hr/relocation-policy.md
+  department: hr
+  format: md
+  allowed_groups:
+  - hr
+  - managers
+  effective_date: '2025-09-01'
+  status: current
+- id: headcount-plan-2026
+  title: Headcount Plan 2026
+  path: documents/hr/headcount-plan-2026.pdf
+  department: hr
+  format: pdf
+  allowed_groups:
+  - hr
+  - finance
+  - executives
+  effective_date: '2025-12-15'
+  status: current
+- id: employee-relations-summary-q3-2026
+  title: Employee Relations Summary Q3 2026
+  path: documents/hr/employee-relations-summary-q3-2026.docx
+  department: hr
+  format: docx
+  allowed_groups:
+  - hr
+  effective_date: '2026-10-05'
+  status: current
+- id: sales-playbook
+  title: Sales Playbook
+  path: documents/sales/sales-playbook.md
+  department: sales
+  format: md
+  allowed_groups:
+  - sales
+  effective_date: '2026-01-15'
+  status: current
+- id: pricing-discount-policy-2026
+  title: Pricing and Discount Policy 2026
+  path: documents/sales/pricing-discount-policy-2026.md
+  department: sales
+  format: md
+  allowed_groups:
+  - sales
+  - finance
+  - executives
+  effective_date: '2026-01-01'
+  status: current
+  supersedes: pricing-discount-policy-2025
+- id: pricing-discount-policy-2025
+  title: Pricing and Discount Policy 2025
+  path: documents/sales/pricing-discount-policy-2025.md
+  department: sales
+  format: md
+  allowed_groups:
+  - sales
+  - finance
+  - executives
+  effective_date: '2025-01-01'
+  status: superseded
+  superseded_by: pricing-discount-policy-2026
+- id: sales-commission-plan-2026
+  title: Sales Commission Plan 2026
+  path: documents/sales/sales-commission-plan-2026.md
+  department: sales
+  format: md
+  allowed_groups:
+  - sales
+  - finance
+  - hr
+  effective_date: '2026-01-01'
+  status: current
+- id: key-accounts-2026
+  title: Key Accounts 2026
+  path: documents/sales/key-accounts-2026.md
+  department: sales
+  format: md
+  allowed_groups:
+  - sales
+  - executives
+  effective_date: '2026-09-30'
+  status: current
+- id: pipeline-review-q3-2026
+  title: Pipeline Review Q3 2026
+  path: documents/sales/pipeline-review-q3-2026.pdf
+  department: sales
+  format: pdf
+  allowed_groups:
+  - sales
+  - executives
+  effective_date: '2026-10-02'
+  status: current
+- id: competitor-battlecard
+  title: Competitor Battlecard
+  path: documents/sales/competitor-battlecard.md
+  department: sales
+  format: md
+  allowed_groups:
+  - sales
+  effective_date: '2026-05-01'
+  status: current
+- id: customer-onboarding-process
+  title: Customer Onboarding Process
+  path: documents/sales/customer-onboarding-process.md
+  department: sales
+  format: md
+  allowed_groups:
+  - sales
+  - engineering
+  effective_date: '2026-03-01'
+  status: current
+- id: budget-2026
+  title: Budget 2026
+  path: documents/finance/budget-2026.md
+  department: finance
+  format: md
+  allowed_groups:
+  - finance
+  - executives
+  effective_date: '2025-12-15'
+  status: current
+- id: financial-report-q2-2026
+  title: Quarterly Financial Report Q2 2026
+  path: documents/finance/financial-report-q2-2026.pdf
+  department: finance
+  format: pdf
+  allowed_groups:
+  - finance
+  - executives
+  effective_date: '2026-07-20'
+  status: current
+- id: financial-report-q3-2026
+  title: Quarterly Financial Report Q3 2026
+  path: documents/finance/financial-report-q3-2026.pdf
+  department: finance
+  format: pdf
+  allowed_groups:
+  - finance
+  - executives
+  effective_date: '2026-10-15'
+  status: current
+- id: accounts-payable-procedure
+  title: Accounts Payable Procedure
+  path: documents/finance/accounts-payable-procedure.md
+  department: finance
+  format: md
+  allowed_groups:
+  - finance
+  effective_date: '2026-02-01'
+  status: current
+- id: vendor-contracts-register
+  title: Vendor Contracts Register
+  path: documents/finance/vendor-contracts-register.docx
+  department: finance
+  format: docx
+  allowed_groups:
+  - finance
+  effective_date: '2026-09-30'
+  status: current
+- id: board-minutes-2026-09
+  title: Board Meeting Minutes September 2026
+  path: documents/leadership/board-minutes-2026-09.docx
+  department: leadership
+  format: docx
+  allowed_groups:
+  - executives
+  effective_date: '2026-09-24'
+  status: current
+- id: engineering-onboarding
+  title: Engineering Onboarding
+  path: documents/engineering/engineering-onboarding.md
+  department: engineering
+  format: md
+  allowed_groups:
+  - engineering
+  effective_date: '2026-01-01'
+  status: current
+- id: incident-response-runbook
+  title: Incident Response Runbook
+  path: documents/engineering/incident-response-runbook.md
+  department: engineering
+  format: md
+  allowed_groups:
+  - engineering
+  effective_date: '2026-04-01'
+  status: current
+- id: on-call-policy
+  title: On-Call Policy
+  path: documents/engineering/on-call-policy.md
+  department: engineering
+  format: md
+  allowed_groups:
+  - engineering
+  effective_date: '2026-01-01'
+  status: current
+- id: architecture-overview
+  title: Architecture Overview
+  path: documents/engineering/architecture-overview.md
+  department: engineering
+  format: md
+  allowed_groups:
+  - engineering
+  effective_date: '2026-09-01'
+  status: current
+- id: postmortem-2026-08-invoice-sync-outage
+  title: 'Postmortem: Invoice Sync Outage August 2026'
+  path: documents/engineering/postmortem-2026-08-invoice-sync-outage.md
+  department: engineering
+  format: md
+  allowed_groups:
+  - engineering
+  - managers
+  effective_date: '2026-08-20'
+  status: current
+- id: release-process
+  title: Release Process
+  path: documents/engineering/release-process.md
+  department: engineering
+  format: md
+  allowed_groups:
+  - engineering
+  effective_date: '2026-01-01'
+  status: current
+- id: product-roadmap-2026-h2
+  title: Product Roadmap H2 2026
+  path: documents/engineering/product-roadmap-2026-h2.md
+  department: engineering
+  format: md
+  allowed_groups:
+  - engineering
+  - sales
+  - executives
+  effective_date: '2026-10-01'
+  status: current

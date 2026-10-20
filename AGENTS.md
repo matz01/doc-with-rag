@@ -21,9 +21,9 @@ When writing Python, prefer idiomatic but simple code and briefly explain non-ob
   No external API for embeddings.
 - **LLM:** all calls go through a single provider-agnostic layer (OpenAI-compatible format or LiteLLM).
   The provider is switched via configuration, never in code.
-    - Primary: **Mistral** (free Experiment plan)
-    - Fallback: **Groq** (free tier)
-    - Optional, local: **Ollama**
+  - Primary: **Mistral** (free Experiment plan)
+  - Fallback: **Groq** (free tier)
+  - Optional, local: **Ollama**
 - **Frontend:** React + TypeScript + Vite, polished UI (clickable citations, user switcher to demonstrate permissions)
 - **Quality:** pytest, ruff; frontend tests with Vitest + React Testing Library
 - **Observability:** Langfuse (or equivalent) for latency, tokens and estimated cost per question
@@ -55,3 +55,12 @@ When writing Python, prefer idiomatic but simple code and briefly explain non-ob
 9. **Extra structured outputs:** field extraction from contracts/invoices into validated JSON
 10. **Polish:** README with architecture diagram, demo GIF, technical decisions and known limitations; deploy the demo
     with cached example questions and a per-visitor request limit
+
+## Working with agents
+
+- Work one phase at a time. Before writing code for a phase, propose the plan and wait for confirmation.
+- Never read, print or modify `.env`.
+- Project subagents live in `./.opencode/agents`:
+  - `@reviewer` — read-only code review before each commit
+  - `@test-writer` — writes and runs tests for existing code
+  - `@code-writer` — writes code to make tests pass
