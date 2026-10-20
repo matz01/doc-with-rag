@@ -5,6 +5,7 @@ description = "Permission-aware enterprise document assistant: API"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "fastapi",
+    "psycopg[binary]>=3.3.6",
     "pydantic-settings>=2.16.0",
     "uvicorn[standard]",
 ]
@@ -25,3 +26,10 @@ select = ["E", "F", "I", "UP", "B"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# `app` lives in the backend root; without this pytest cannot import it.
+pythonpath = ["."]
+markers = [
+    "integration: needs the Postgres + pgvector container from docker compose",
+    "slow: downloads or builds something that takes minutes (bge-m3 embeddings)",
+    "llm: calls a real LLM provider (costs requests on the free tier)",
+]

@@ -1,8 +1,13 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, Request, status
+from fastapi.responses import JSONResponse
 
-from app.config import get_settings
+from app.config import Settings, get_settings
+from app.db.checks import database_ready_checks
+from app.errors import DatabaseCheckError
+
+HTTP_503 = status.HTTP_503_SERVICE_UNAVAILABLE
 
 
 @asynccontextmanager
@@ -24,3 +29,29 @@ app = FastAPI(
 def health() -> dict[str, str]:
     """Liveness probe: the process is up. It does not check the database."""
     return {"status": "ok"}
+
+
+def check_database_ready(settings: Settings = Depends(get_settings)) -> dict[str, str]:  # noqa: B008 - FastAPI's DI idiom
+    """Report the state of the database dependencies, one entry per check.
+
+    The checks live in `app/db`; `Depends` lets unit tests inject a fake instead.
+    """
+    return database_ready_checks(settings.database_url)
+
+
+@app.exception_handler(DatabaseCheckError)
+def database_check_error(request: Request, exc: DatabaseCheckError) -> JSONResponse:
+    """The checker could not produce any result: readiness fails with 503, never 500."""
+    return JSONResponse({"status": "unavailable", "error": str(exc)}, status_code=HTTP_503)
+
+
+@app.get("/ready")
+def ready(
+    checks: dict[str, str] = Depends(check_database_ready),  # noqa: B008 - FastAPI's DI idiom
+) -> JSONResponse:
+    """Readiness probe: the database is reachable and pgvector is installed."""
+    if all(value == "ok" for value in checks.values()):
+        return JSONResponse({"status": "ok", **checks})
+    return JSONResponse(
+        {"status": "unavailable", **checks}, status_code=status.HTTP_503_SERVICE_UNAVAILABLE
+    )
