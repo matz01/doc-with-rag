@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, Request, status
@@ -8,6 +9,12 @@ from app.db.checks import database_ready_checks
 from app.errors import DatabaseCheckError
 
 HTTP_503 = status.HTTP_503_SERVICE_UNAVAILABLE
+
+logger = logging.getLogger(__name__)
+
+# Ready means "usable or not", nothing more: driver messages (psycopg included) can
+# carry host and user names, so the body stays generic and the cause goes to the log.
+READY_FAILURE_MESSAGE = "database is not available"
 
 
 @asynccontextmanager
@@ -42,7 +49,11 @@ def check_database_ready(settings: Settings = Depends(get_settings)) -> dict[str
 @app.exception_handler(DatabaseCheckError)
 def database_check_error(request: Request, exc: DatabaseCheckError) -> JSONResponse:
     """The checker could not produce any result: readiness fails with 503, never 500."""
-    return JSONResponse({"status": "unavailable", "error": str(exc)}, status_code=HTTP_503)
+    # The detail belongs in the log only; clients see the fixed generic message.
+    logger.error("database readiness check failed: %s", exc)
+    return JSONResponse(
+        {"status": "unavailable", "error": READY_FAILURE_MESSAGE}, status_code=HTTP_503
+    )
 
 
 @app.get("/ready")

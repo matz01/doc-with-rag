@@ -1,3 +1,5 @@
+import logging
+
 from fastapi.testclient import TestClient
 
 from app import main
@@ -36,14 +38,14 @@ def _raising_database_checker() -> dict[str, str]:
 
     When the checker cannot produce a status dict at all (connection failed,
     unexpected error), it raises the domain exception DatabaseCheckError instead
-    of returning entries; the app must map it to a 503, never a 500.
+    of returning entries. The message mimics what psycopg would report, because
+    driver messages can include host and user names and must never reach the body.
     """
-    raise DatabaseCheckError("unexpected failure while checking the database")
+    raise DatabaseCheckError("connection failed: host localhost, user docrag")
 
 
 def test_ready_returns_503_when_database_is_unreachable():
-    checker = getattr(main, "check_database_ready", _failing_database_checker)
-    app.dependency_overrides[checker] = _failing_database_checker
+    app.dependency_overrides[main.check_database_ready] = _failing_database_checker
     try:
         response = client.get("/ready")
     finally:
@@ -58,8 +60,7 @@ def test_ready_returns_503_when_database_is_unreachable():
 
 
 def test_ready_returns_503_with_error_when_pgvector_is_missing():
-    checker = getattr(main, "check_database_ready", _pgvector_missing_checker)
-    app.dependency_overrides[checker] = _pgvector_missing_checker
+    app.dependency_overrides[main.check_database_ready] = _pgvector_missing_checker
     try:
         response = client.get("/ready")
     finally:
@@ -74,28 +75,26 @@ def test_ready_returns_503_with_error_when_pgvector_is_missing():
     }
 
 
-def test_ready_returns_503_when_the_check_raises_database_check_error():
-    checker = getattr(main, "check_database_ready", _raising_database_checker)
-    app.dependency_overrides[checker] = _raising_database_checker
+def test_ready_returns_503_with_generic_error_when_the_check_raises(caplog):
+    app.dependency_overrides[main.check_database_ready] = _raising_database_checker
     try:
-        response = client.get("/ready")
+        with caplog.at_level(logging.ERROR):
+            response = client.get("/ready")
     finally:
         app.dependency_overrides.clear()
 
+    body = response.json()
     assert response.status_code == 503
-    assert response.json() == {
-        "status": "unavailable",
-        "error": "unexpected failure while checking the database",
-    }
+    # The body speaks for the app, not for the driver: psycopg messages can include
+    # host and user names, so the exception text must never be echoed back.
+    assert body == {"status": "unavailable", "error": "database is not available"}
+    assert "host localhost, user docrag" not in response.text
+    # Operators still need the cause: the detail goes to the log, not to the client.
+    assert "connection failed: host localhost, user docrag" in caplog.text
 
 
 def test_ready_returns_200_with_all_checks_ok():
-    # The /ready route and its dependency do not exist yet. Key the override on the
-    # real dependency (app.main.check_database_ready) so the fake is injected as
-    # soon as the route lands; until then the fake doubles as a placeholder key
-    # and the request fails with the expected 404 instead of an import error.
-    checker = getattr(main, "check_database_ready", _passing_database_checker)
-    app.dependency_overrides[checker] = _passing_database_checker
+    app.dependency_overrides[main.check_database_ready] = _passing_database_checker
     try:
         response = client.get("/ready")
     finally:
