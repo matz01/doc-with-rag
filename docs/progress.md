@@ -51,17 +51,32 @@ _Last updated: 2026-10-20 · Updated with `/wrap-up` at the end of each working 
 
 ## Open follow-ups
 
-- **`/ready` leaks driver details.** The 503 body returns the psycopg error text, which can include
-  host and user names. Return a generic message and log the details instead.
-- **Integration tests hard-code the database URL** (`docrag:docrag@localhost:5432`). They fail if
-  `.env` uses different credentials. Read a `TEST_DATABASE_URL` (or the settings) instead.
-- **Leftover red-phase scaffolding in `tests/unit/test_ready.py`:** `getattr(main, "check_database_ready", ...)`
-  is no longer needed now that the dependency exists; override `check_database_ready` directly.
-- Consider `addopts = "--strict-markers"` so a misspelled marker fails the run.
-- README still says "Phase 1"; update the status line and mention the dataset.
+- **Separate test database before phase 3.** Integration tests currently use the same database as
+  the app (`DATABASE_URL`). That is fine while they only read (`/ready`), but from phase 3 they will
+  insert and delete documents. Create a `docrag_test` database in the same container (in
+  `infra/postgres/init.sql`, with the `vector` extension), point `TEST_DATABASE_URL` at it, and
+  reset its tables at the start of each integration run.
+- Integration tests duplicate the default database URL (also the `Settings` default in
+  `app/config.py`): could reference `Settings.model_fields["database_url"].default` instead.
+- `TEST_DATABASE_URL` precedence is read with raw `os.environ.get` in the integration helpers,
+  not through pydantic-settings: acceptable for test helpers, revisit if it grows.
+
+## Session log
+
+2026-10-20 (follow-up session, before phase 3):
+
+- `/ready` no longer leaks driver details: the 503 body returns the fixed generic message
+  "database is not available"; the checker error text is logged instead (unit test pins both
+  the hiding and the logging; the integration test pins it end-to-end against a real wrong password).
+- Integration tests no longer hard-code the database URL: `TEST_DATABASE_URL` when set,
+  otherwise the same `database_url` the app reads from `.env`. Documented in `.env.example`.
+- Red-phase scaffolding removed from `tests/unit/test_ready.py` (direct `check_database_ready`
+  override keys instead of `getattr` fallbacks).
+- `addopts = "--strict-markers"` in `backend/pyproject.toml`.
+- README status line updated; Data section now describes the dataset.
 
 ## Next step
 
-Fix the open follow-ups (one `/tdd` cycle for the `/ready` error message), then plan **phase 3 —
-Ingestion**: parse MD, PDF and DOCX from `data/manifest.yaml`, chunk, embed locally with bge-m3,
-and store chunks with their `allowed_groups` in pgvector.
+Plan **phase 3 — Ingestion**, starting with the separate test database: parse MD, PDF and DOCX
+from `data/manifest.yaml`, chunk, embed locally with bge-m3, and store chunks with their
+`allowed_groups` in pgvector.
