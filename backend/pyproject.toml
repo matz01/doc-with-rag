@@ -28,6 +28,8 @@ select = ["E", "F", "I", "UP", "B"]
 testpaths = ["tests"]
 # `app` lives in the backend root; without this pytest cannot import it.
 pythonpath = ["."]
+# A misspelled marker (e.g. `integrations`) is a silent skip: fail the run instead.
+addopts = "--strict-markers"
 markers = [
     "integration: needs the Postgres + pgvector container from docker compose",
     "slow: downloads or builds something that takes minutes (bge-m3 embeddings)",
