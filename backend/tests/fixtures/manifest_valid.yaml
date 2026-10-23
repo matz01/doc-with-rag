@@ -1,0 +1,34 @@
+# Minimal manifest fixture for the manifest loader unit tests.
+# The referenced files do not need to exist: the loader is not checked
+# for file existence in this cycle.
+
+documents:
+- id: alpha-handbook
+  title: Alpha Handbook
+  path: documents/company/alpha-handbook.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  - engineers
+  effective_date: '2026-01-01'
+  status: current
+- id: beta-policy-2026
+  title: Beta Policy 2026
+  path: documents/company/beta-policy-2026.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  effective_date: '2026-01-01'
+  status: current
+  supersedes: beta-policy-2025
+- id: beta-policy-2025
+  title: Beta Policy 2025
+  path: documents/company/beta-policy-2025.md
+  department: company
+  format: md
+  allowed_groups:
+  - all_staff
+  effective_date: '2025-01-01'
+  status: superseded
