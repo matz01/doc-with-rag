@@ -79,6 +79,18 @@ def ensure_test_database() -> None:
             cursor.execute("CREATE EXTENSION IF NOT EXISTS vector")
 
 
+def is_safe_to_reset(database_url: str, app_database_url: str) -> bool:
+    """Whether a bare-bones `DROP SCHEMA` may run against `database_url`.
+
+    Both conditions must hold: the database name ends with `_test` (the target is a
+    dedicated test database) and the URL is not literally the app's `DATABASE_URL`
+    (running the app itself on a `_test`-named database would otherwise still be a
+    target). Exits the guard with a clear error when either condition fails.
+    """
+    database_name = urlsplit(database_url).path.rpartition("/")[2]
+    return database_name.endswith("_test") and database_url != app_database_url
+
+
 def reset_test_database() -> None:
     """Drop and recreate the `public` schema of the test database.
 
@@ -87,6 +99,12 @@ def reset_test_database() -> None:
     state. The test database is dedicated to tests, so destroying its content is safe.
     """
     url = _test_database_url()
+    # Guard rails before the destructive statement; see the docstring of `is_safe_to_reset`.
+    if not is_safe_to_reset(url, _UrlSettings().database_url):
+        raise RuntimeError(
+            f"refusing to reset {url}: the target must be a *_test database "
+            "and must not be the app's DATABASE_URL"
+        )
     # autocommit: DDL statements here cannot share the implicit transaction psycopg
     # would otherwise open around the first execute().
     with psycopg.connect(url, autocommit=True) as conn:
