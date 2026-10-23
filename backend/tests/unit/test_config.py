@@ -77,3 +77,13 @@ def test_api_key_is_not_leaked_in_repr():
     settings = make_settings(mistral_api_key="super-secret")
 
     assert "super-secret" not in repr(settings)
+
+
+def test_default_embedding_model_is_bge_m3(monkeypatch):
+    # Embeddings run locally with a documented model; pin the default so the
+    # stored vectors keep their dimensions unless the setting is explicit.
+    monkeypatch.delenv("EMBEDDING_MODEL", raising=False)
+
+    settings = make_settings(mistral_api_key="test-key")
+
+    assert settings.embedding_model == "BAAI/bge-m3"

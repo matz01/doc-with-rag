@@ -50,6 +50,10 @@ class Settings(BaseSettings):
     ollama_base_url: str = "http://localhost:11434/v1"
     ollama_model: str = "llama3.1:8b"
 
+    # Embeddings run locally (AGENTS.md: no external embedding API). The default model
+    # pairs with the pinned `vector(1024)` column: changing it invalidates the stored vectors.
+    embedding_model: str = "BAAI/bge-m3"
+
     @field_validator("llm_fallback_provider", mode="before")
     @classmethod
     def empty_fallback_means_none(cls, value: object) -> object:
