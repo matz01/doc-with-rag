@@ -77,3 +77,22 @@ def ensure_test_database() -> None:
     with psycopg.connect(target) as conn:
         with conn.cursor() as cursor:
             cursor.execute("CREATE EXTENSION IF NOT EXISTS vector")
+
+
+def reset_test_database() -> None:
+    """Drop and recreate the `public` schema of the test database.
+
+    Runs before the schema-migration tests (and later at the start of an integration
+    run): integration tests create data, so every run must start from a known empty
+    state. The test database is dedicated to tests, so destroying its content is safe.
+    """
+    url = _test_database_url()
+    # autocommit: DDL statements here cannot share the implicit transaction psycopg
+    # would otherwise open around the first execute().
+    with psycopg.connect(url, autocommit=True) as conn:
+        with conn.cursor() as cursor:
+            cursor.execute("DROP SCHEMA IF EXISTS public CASCADE")
+            cursor.execute("CREATE SCHEMA public")
+            # Dropping the schema also dropped every object living in it, including
+            # the pgvector extension installed there.
+            cursor.execute("CREATE EXTENSION IF NOT EXISTS vector")
