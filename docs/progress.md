@@ -1,6 +1,6 @@
 # Progress
 
-_Last updated: 2026-10-20 · Updated with `/wrap-up` at the end of each working session._
+_Last updated: 2026-10-23 · Updated with `/wrap-up` at the end of each working session._
 
 ## Status
 
@@ -8,10 +8,25 @@ _Last updated: 2026-10-20 · Updated with `/wrap-up` at the end of each working 
 |---|---|
 | 1. Foundations | ✅ Done (small follow-ups below) |
 | 2. Fictional data | ✅ Done |
-| 3. Ingestion | ⏳ Next |
+| 3. Ingestion | 🔄 In progress (schema migrations done, pipeline next) |
 | 4–10 | ⏳ To do |
 
 ## Done
+
+### Phase 3 — Ingestion (in progress)
+
+- Migration runner in plain SQL (`app/db/migrations.py`): numbered `.sql` files in
+  `app/db/migrations/`, applied in order and tracked in `schema_migrations`, each in its
+  own transaction with its tracking row. Not wired into app startup yet.
+- `0001_corpus_schema.sql`: `documents` (with `allowed_groups`, `status`, `supersedes`,
+  `content_hash`) and `chunks` (document reference, ordinal, 1024-dim `vector` pinned to
+  bge-m3, HNSW cosine index). **Permissions live only on documents** — chunks carry
+  no permission copy of their own; every chunk-returning query joins `documents` in the
+  WHERE clause (see Decisions).
+- Integration tests run against the dedicated `docrag_test` database (commit `bd7c76c`),
+  with a guard on `reset_test_database`: it refuses any URL that is not a `*_test`
+  database or that equals the app's `DATABASE_URL` (URL logic unit-tested):
+  `tests/unit/test_database_reset_guard.py`, `tests/integration/_database.py`.
 
 ### Phase 1 — Foundations
 
@@ -42,6 +57,7 @@ _Last updated: 2026-10-20 · Updated with `/wrap-up` at the end of each working 
 
 | Decision | Why | Trade-off |
 |---|---|---|
+| Permissions stored only on `documents.allowed_groups`, chunk queries join documents in the WHERE clause | Single source of truth: a stale or diverging per-chunk copy could grant access and there would be no schema-level guarantee of consistency | One primary-key join per chunk query; chunks are always queried with their document |
 | OpenAI-compatible API for all LLM providers, no LiteLLM | One less dependency, full control over retry and fallback | A non-compatible provider would need an adapter |
 | psycopg 3 (sync) with explicit SQL in `app/db/` | The permission filter must be easy to read and review | No ORM conveniences; sync calls run in FastAPI's thread pool |
 | Separate `/health` (liveness) and `/ready` (readiness) | Standard probe split: a database outage should not restart the API | Two endpoints to maintain |
@@ -51,15 +67,33 @@ _Last updated: 2026-10-20 · Updated with `/wrap-up` at the end of each working 
 
 ## Open follow-ups
 
-- **Separate test database before phase 3.** Integration tests currently use the same database as
-  the app (`DATABASE_URL`). That is fine while they only read (`/ready`), but from phase 3 they will
-  insert and delete documents. Create a `docrag_test` database in the same container (in
-  `infra/postgres/init.sql`, with the `vector` extension), point `TEST_DATABASE_URL` at it, and
-  reset its tables at the start of each integration run.
 - Integration tests duplicate the default database URL (also the `Settings` default in
   `app/config.py`): could reference `Settings.model_fields["database_url"].default` instead.
 - `TEST_DATABASE_URL` precedence is read with raw `os.environ.get` in the integration helpers,
   not through pydantic-settings: acceptable for test helpers, revisit if it grows.
+- The migration runner does not detect edited files (a `.sql` changed after being applied is
+  silently skipped): track a checksum when the first need appears; also no advisory lock, so
+  two concurrent starts could race on `schema_migrations`.
+- Add a chunk write-path test with the pgvector adapter (write an embedding as adapted numpy
+  data, not only as a `::vector` cast string) when the real embedder lands.
+- Verify the Dockerfile copies `app/db/migrations/` (apply_migrations reads the `.sql` files
+  at runtime) at the first container build that runs it.
+
+## Design notes for later phases
+
+- **Phase 4 — question routing with tool calling.** Semantic search answers questions about document
+  *content*, but fails on questions about document *metadata* (e.g. "list the documents whose title
+  starts with A": embeddings compare meaning, not letters). The LLM therefore receives two tools and
+  chooses one per question:
+  - `search_documents(query)` — semantic search on chunks;
+  - `list_documents(title_prefix, department, status, ...)` — SQL filter on document metadata.
+
+  Both tools read the user from the request session, never from a tool argument the LLM can set, and
+  apply the permission filter inside the SQL query.
+- **Phase 6 — `metadata` evaluation category.** Add questions such as "List the documents whose title
+  starts with A" for at least two users with different groups. The expected list is computed from
+  `data/manifest.yaml` (title prefix + `allowed_groups`), so the check is deterministic and also
+  verifies permissions.
 
 ## Session log
 
@@ -77,6 +111,7 @@ _Last updated: 2026-10-20 · Updated with `/wrap-up` at the end of each working 
 
 ## Next step
 
-Plan **phase 3 — Ingestion**, starting with the separate test database: parse MD, PDF and DOCX
-from `data/manifest.yaml`, chunk, embed locally with bge-m3, and store chunks with their
-`allowed_groups` in pgvector.
+Continue **phase 3 — Ingestion TDD cycles** (test DB and schema migrations are done):
+parse MD, PDF and DOCX from `data/manifest.yaml`, chunk with a deterministic splitter,
+embed locally with bge-m3 (fake embedder in unit tests), and insert documents and chunks
+(permission filter reads `documents.allowed_groups` via join).

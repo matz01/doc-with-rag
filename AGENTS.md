@@ -85,9 +85,12 @@ Status: ✅ done · 🔄 in progress · ⏳ to do. Details, decisions and next s
    `.env.example`, `/health` and `/ready` endpoints
 2. ✅ **Fictional data:** see `data/README.md` and `evals/README.md`
 3. ⏳ **Ingestion:** parsing (MD, PDF, DOCX), chunking, local embeddings, storage in pgvector with metadata and permissions from `data/manifest.yaml`
-4. ⏳ **Q&A:** question endpoint → permission-filtered search → LLM answer with citations (structured, validated output)
+4. ⏳ **Q&A:** question endpoint → permission-filtered search → LLM answer with citations (structured, validated output).
+   The LLM routes each question with tool calling between `search_documents` (semantic search on content) and
+   `list_documents` (metadata filters: title, department, date, status). Both tools take the user from the
+   session, never from the LLM, and apply the permission filter in SQL
 5. ⏳ **Frontend:** chat, clickable citations, user switcher
-6. ⏳ **Evaluation:** runner for `evals/questions.yaml`; deterministic retrieval and answer checks, optional LLM-as-judge;
+6. ⏳ **Evaluation:** runner for `evals/questions.yaml` (including a `metadata` category for `list_documents`); deterministic retrieval and answer checks, optional LLM-as-judge;
    provider comparison; results table in the README
 7. ⏳ **Observability and reliability:** tracing, costs, retry/fallback
 8. ⏳ **MCP server** exposing document search (permission-aware)
