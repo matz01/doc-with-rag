@@ -84,7 +84,7 @@ Status: ✅ done · 🔄 in progress · ⏳ to do. Details, decisions and next s
 1. ✅ **Foundations:** repo structure, docker-compose with Postgres + pgvector, minimal FastAPI app, provider config,
    `.env.example`, `/health` and `/ready` endpoints
 2. ✅ **Fictional data:** see `data/README.md` and `evals/README.md`
-3. ⏳ **Ingestion:** parsing (MD, PDF, DOCX), chunking, local embeddings, storage in pgvector with metadata and permissions from `data/manifest.yaml`
+3. 🔄 **Ingestion:** parsing (MD, PDF, DOCX), chunking, local embeddings, storage in pgvector with metadata and permissions from `data/manifest.yaml`
 4. ⏳ **Q&A:** question endpoint → permission-filtered search → LLM answer with citations (structured, validated output).
    The LLM routes each question with tool calling between `search_documents` (semantic search on content) and
    `list_documents` (metadata filters: title, department, date, status). Both tools take the user from the
